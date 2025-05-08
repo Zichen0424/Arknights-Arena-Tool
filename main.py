@@ -33,7 +33,7 @@ class ArknightsApp:
         self.first_recognize = True
         # 用户选项
         self.is_invest = tk.BooleanVar(value=False)  # 添加投资状态变量
-        self.game_mode = tk.StringVar(value="单人")  # 添加游戏模式变量，默认单人模式
+        self.game_mode = tk.StringVar(value="Single")  # 添加游戏模式变量，默认单人模式
         self.device_serial = tk.StringVar(value=loadData.manual_serial)  # 添加设备序列号变量
 
         # 数据缓存
@@ -137,10 +137,10 @@ class ArknightsApp:
         )
 
         # 添加左右标题
-        tk.Label(self.left_frame, text="左侧怪物", font=("Helvetica", 10, "bold")).grid(
+        tk.Label(self.left_frame, text="Left Units", font=("Helvetica", 10, "bold")).grid(
             row=0, columnspan=10
         )
-        tk.Label(self.right_frame, text="右侧怪物", font=("Helvetica", 10, "bold")).grid(
+        tk.Label(self.right_frame, text="Right Units", font=("Helvetica", 10, "bold")).grid(
             row=0, columnspan=10
         )
 
@@ -208,7 +208,7 @@ class ArknightsApp:
         # 时长输入组
         duration_frame = tk.Frame(control_col)
         duration_frame.pack(pady=2)
-        tk.Label(duration_frame, text="训练时长:").pack(side=tk.LEFT)
+        tk.Label(duration_frame, text="Train Time:").pack(side=tk.LEFT)
         self.duration_entry = tk.Entry(duration_frame, width=6)
         self.duration_entry.insert(0, "-1")
         self.duration_entry.pack(side=tk.LEFT, padx=5)
@@ -216,9 +216,9 @@ class ArknightsApp:
         # 模式选择组
         mode_frame = tk.Frame(control_col)
         mode_frame.pack(pady=2)
-        self.mode_menu = tk.OptionMenu(mode_frame, self.game_mode, "单人", "30人")
+        self.mode_menu = tk.OptionMenu(mode_frame, self.game_mode, "Single", "30 players")
         self.mode_menu.pack(side=tk.LEFT)
-        self.invest_checkbox = tk.Checkbutton(mode_frame, text="投资", variable=self.is_invest)
+        self.invest_checkbox = tk.Checkbutton(mode_frame, text="Investment", variable=self.is_invest)
         self.invest_checkbox.pack(side=tk.LEFT, padx=5)
 
         # 中间按钮列（核心操作）
@@ -226,12 +226,12 @@ class ArknightsApp:
         action_col.pack(anchor="center", expand=True)
 
         # 核心操作按钮
-        action_buttons = [("自动获取数据", self.toggle_auto_fetch)]
+        action_buttons = [("Auto Mode", self.toggle_auto_fetch)]
         # 单独处理自动获取数据按钮
         for text, cmd in action_buttons:
             btn = tk.Button(action_col, text=text, command=cmd, width=14)  # 加宽按钮
             btn.pack(pady=5, ipadx=5)
-            if text == "自动获取数据":
+            if text == "Auto Mode":
                 self.auto_fetch_button = btn
             btn.pack(pady=5, ipadx=5)
 
@@ -243,17 +243,17 @@ class ArknightsApp:
         predict_frame = tk.Frame(func_col)
         predict_frame.pack(pady=2)
         self.predict_button = tk.Button(
-            predict_frame, text="预测", command=self.predict, width=8, bg="#FFE4B5"
+            predict_frame, text="Predict", command=self.predict, width=8, bg="#FFE4B5"
         )
         self.predict_button.pack(side=tk.LEFT, padx=2)
 
         self.recognize_button = tk.Button(
-            predict_frame, text="识别并预测", command=self.recognize, width=10, bg="#98FB98"
+            predict_frame, text="Recognize & Predict", command=self.recognize, width=22, bg="#98FB98"
         )
         self.recognize_button.pack(side=tk.LEFT, padx=2)
 
         self.reset_button = tk.Button(
-            predict_frame, text="归零", command=self.reset_entries, width=6
+            predict_frame, text="zero", command=self.reset_entries, width=6
         )
         self.reset_button.pack(side=tk.LEFT, padx=2)
 
@@ -262,36 +262,36 @@ class ArknightsApp:
         serial_frame.pack(pady=5)
 
         self.reselect_button = tk.Button(
-            serial_frame, text="选择范围", command=self.reselect_roi, width=10
+            serial_frame, text="Chose Range", command=self.reselect_roi, width=14
         )
         self.reselect_button.pack(side=tk.LEFT)
 
-        tk.Label(serial_frame, text="设备号:").pack(side=tk.LEFT)
+        tk.Label(serial_frame, text="Device Number :").pack(side=tk.LEFT)
         self.serial_entry = tk.Entry(serial_frame, textvariable=self.device_serial, width=15)
         self.serial_entry.pack(side=tk.LEFT, padx=3)
 
         self.serial_button = tk.Button(
-            serial_frame, text="更新", command=self.update_device_serial, width=6
+            serial_frame, text="Update", command=self.update_device_serial, width=6
         )
         self.serial_button.pack(side=tk.LEFT)
 
         # 错题本开关
         self.history_button = tk.Button(
-            func_col, text="显示错题本", command=self.toggle_history_panel, width=10
+            func_col, text="Wronged Predictions", command=self.toggle_history_panel, width=20
         )
         self.history_button.pack(pady=4)  # 可以 side=tk.TOP / BOTTOM 都行
 
     def toggle_history_panel(self):
         if not self.history_visible:
             self.history_container.pack(side="right", fill="both", padx=5, pady=5)
-            self.history_button.config(text="隐藏错题本")
+            self.history_button.config(text="Hide Wronged Predictions")
             for w in self.history_frame.winfo_children():
                 w.destroy()
             self.render_history(self.history_frame)
             self.history_canvas.configure(scrollregion=self.history_canvas.bbox("all"))
         else:
             self.history_container.pack_forget()
-            self.history_button.config(text="显示错题本")
+            self.history_button.config(text="Show Wronged Predictions")
         self.history_visible = not self.history_visible
 
     def render_history(self, parent):
@@ -459,7 +459,7 @@ class ArknightsApp:
 
         # 格式化输出
         result_text = (
-            f"预测结果:\n\n左方胜率: {left_win_prob:.2%}\t\t" f"右方胜率: {right_win_prob:.2%}"
+            f"Predicted Result:\n\nLeft Wins: {left_win_prob:.2%}\t\t" f"Right Wins: {right_win_prob:.2%}"
         )
 
         # 根据胜率设置颜色（保持与之前一致）
